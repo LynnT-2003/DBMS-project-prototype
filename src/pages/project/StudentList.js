@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { Table, Modal, Button } from 'react-bootstrap'
 import "./style.css"
 
-export default function StudentList({ students, removeStudent, setSelectedID, setNewStatus, handleUpdateStatus, newStatus, selectedID }) {
+export default function StudentList({ students, removeStudent, setSelectedID, setNewStatus, handleUpdateStatus, newStatus, selectedID, showStatusModal, setShowStatusModal }) {
   const [showModal, setShowModal] = useState(false);
   return (
     <div>
@@ -35,7 +35,7 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
                 </button>
                 <button
                   onClick={() => {setSelectedID(student.id); 
-                    setShowModal(true); console.log("showModal set to True")}}>
+                    setShowStatusModal(true); console.log("showModal set to True")}}>
                   Update
                 </button>
               </td>
@@ -44,7 +44,7 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
         </tbody>
       </Table>
       
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Update Status</Modal.Title>
         </Modal.Header>
@@ -55,7 +55,7 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
             <option value="Frozen">Frozen</option>
             <option value="Scholarship">Scholarship</option>
             <option value="Graduated">Graduated</option>
-            <option value="Dishonored">Dishonored</option>
+            <option value="dishonored">Dishonored</option>
           </select>
         </Modal.Body>
 
@@ -64,7 +64,7 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
          */}
         
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
             Close
           </Button>
           <Button variant="primary" onClick={handleUpdateStatus}>

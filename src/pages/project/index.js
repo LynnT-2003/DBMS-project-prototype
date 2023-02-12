@@ -10,6 +10,7 @@ function StudentDataApp() {
   const [scholarshipStudents, setScholarshipStudents] = useLocalStorage("scholarshipList",[])
   const [selectedID, setSelectedID] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+  const [showStatusModal, setShowStatusModal] = useState(false)
 
 
   const [currentPage, setCurrentPage] = useState("home")
@@ -31,6 +32,7 @@ function StudentDataApp() {
       return student;
     });
     setStudents(updatedStudents);
+    setShowStatusModal(false)
   };
 
   const handleUpdateStatus = () => {
@@ -91,6 +93,8 @@ function StudentDataApp() {
           handleUpdateStatus = {handleUpdateStatus}
           newStatus = {newStatus}
           selectedID = {selectedID}
+          showStatusModal = {showStatusModal}
+          setShowStatusModal = {setShowStatusModal}
           />
         </div>
       </div>
