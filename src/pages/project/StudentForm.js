@@ -1,20 +1,7 @@
 import React, { useState } from 'react'
 
-export default function StudentForm({addStudent}) {
+export default function StudentForm({addStudent, students}) {
     const [student, setStudent] = useState({
-      id: '',
-      name: '',
-      grade: '',
-    });
-  
-    const handleChange = (event) => {
-      setStudent({ ...student, [event.target.name]: event.target.value });
-    };
-  
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      addStudent({ ...student });
-      setStudent({
         id: '',
         firstName: '',
         lastName: '',
@@ -22,7 +9,33 @@ export default function StudentForm({addStudent}) {
         SCPA: '',
         status: '',
         monitoredBy: '',
-      });
+    });
+  
+    const handleChange = (event) => {
+      setStudent({ ...student, [event.target.name]: event.target.value });
+    };
+  
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        console.table(students)
+        
+        const studentExists = students.some((stu) => stu.id === student.id);
+        if (studentExists) {
+          alert("A student with the same ID already exists");
+          return;
+        }
+        
+        addStudent({ ...student });
+        setStudent({
+          id: '',
+          firstName: '',
+          lastName: '',
+          GPA: '',
+          SCPA: '',
+          status: '',
+          monitoredBy: '',
+        });
     };
 
   return (

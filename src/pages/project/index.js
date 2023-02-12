@@ -13,7 +13,10 @@ function StudentDataApp() {
   const [showStatusModal, setShowStatusModal] = useState(false)
 
 
-  const [currentPage, setCurrentPage] = useState("home")
+  const [currentPage, setCurrentPage] = useState("admin")
+  function handlePage(page) {
+    setCurrentPage(page)
+  }
 
   const addStudent = (student) => {
     setStudents([...students, student]);
@@ -58,8 +61,8 @@ function StudentDataApp() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#about">Profile</Nav.Link>
+              <Nav.Link href="#admin" onClick={()=>handlePage("admin")}>Admin</Nav.Link>
+              <Nav.Link href="#overseer" onClick={()=>handlePage("overseer")}>Overseer</Nav.Link>
             </Nav>
             <Nav>
               <NavDropdown title="About" id="basic-nav-dropdown">
@@ -79,25 +82,41 @@ function StudentDataApp() {
         </Navbar>
       </div>
 
-      <div className="container">
-        <h5>Student Data Management</h5>
-        <div className="form-container">
-          <StudentForm addStudent={addStudent} />
+      <main>
+
+        {currentPage === "admin" && (
+          <div className="container">
+          <h5>Student Data Management</h5>
+          <div className="form-container">
+            <StudentForm 
+            addStudent={addStudent}
+            students = {students}
+            />
+          </div>
+          <div className="table-container"> 
+            <StudentList 
+            students={students} 
+            removeStudent={removeStudent} 
+            setSelectedID = {setSelectedID}
+            setNewStatus = {setNewStatus}
+            handleUpdateStatus = {handleUpdateStatus}
+            newStatus = {newStatus}
+            selectedID = {selectedID}
+            showStatusModal = {showStatusModal}
+            setShowStatusModal = {setShowStatusModal}
+            />
+          </div>
         </div>
-        <div className="table-container"> 
-          <StudentList 
-          students={students} 
-          removeStudent={removeStudent} 
-          setSelectedID = {setSelectedID}
-          setNewStatus = {setNewStatus}
-          handleUpdateStatus = {handleUpdateStatus}
-          newStatus = {newStatus}
-          selectedID = {selectedID}
-          showStatusModal = {showStatusModal}
-          setShowStatusModal = {setShowStatusModal}
-          />
-        </div>
-      </div>
+        )
+        }
+        {currentPage === "overseer" && (
+          <div>
+            <h4>Overseer Page under construction :)</h4>
+          </div>
+        )}
+      </main>
+
+      
     </>
   );
 }
