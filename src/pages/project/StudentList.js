@@ -49,12 +49,20 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
           <Modal.Title>Update Status</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input
-            type="text"
-            value={newStatus}
-            onChange={(e) => setNewStatus(e.target.value)}
-          />
+          <label>Set new status for Student ID {selectedID}:</label>
+          <select className='form-control' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
+            <option value="Active">Active</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Scholarship">Scholarship</option>
+            <option value="Graduated">Graduated</option>
+            <option value="Dishonored">Dishonored</option>
+          </select>
         </Modal.Body>
+
+        {/**
+         * Set showModal to false on Update !
+         */}
+        
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close

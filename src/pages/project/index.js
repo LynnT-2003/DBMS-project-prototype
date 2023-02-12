@@ -7,6 +7,7 @@ import { useLocalStorage } from 'react-use';
 
 function StudentDataApp() {
   const [students, setStudents] = useLocalStorage("studentsData",[]);
+  const [scholarshipStudents, setScholarshipStudents] = useLocalStorage("scholarshipList",[])
   const [selectedID, setSelectedID] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
@@ -40,7 +41,7 @@ function StudentDataApp() {
   };
 
   React.useEffect(()=>{
-    alert("The students list have been updated")
+    console.log("Students data have been updated")
   },[students])
   
 
