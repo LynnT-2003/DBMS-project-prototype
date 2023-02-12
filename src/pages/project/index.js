@@ -3,9 +3,10 @@ import StudentForm from './StudentForm'
 import StudentList from './StudentList';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Navbar, Nav, NavDropdown } from "react-bootstrap"
+import { useLocalStorage } from 'react-use';
 
 function StudentDataApp() {
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useLocalStorage("studentsData",[]);
   const [selectedID, setSelectedID] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
@@ -21,6 +22,7 @@ function StudentDataApp() {
   };
 
   const updateStudentStatus = (id, newStatus) => {
+    localStorage.removeItem("studentsData");
     const updatedStudents = students.map((student) => {
       if (student.id === id) {
         return { ...student, status: newStatus };
