@@ -55,7 +55,7 @@ function StudentDataApp() {
       <div className='navbar-section' style={{marginBottom:"20px"}}>
 
         <Navbar expand="lg" style={{ backgroundColor: "#caf0f8" }}>
-          <Navbar.Brand className="my-margin app-title" href="#grade-tracker">
+          <Navbar.Brand style={{ marginLeft: "20px" }} href="#grade-tracker">
             SCPA Project
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -63,6 +63,7 @@ function StudentDataApp() {
             <Nav className="mr-auto">
               <Nav.Link href="#admin" onClick={()=>handlePage("admin")}>Admin</Nav.Link>
               <Nav.Link href="#overseer" onClick={()=>handlePage("overseer")}>Overseer</Nav.Link>
+              <Nav.Link href="#student" onClick={()=>handlePage("student")}>Student</Nav.Link>
             </Nav>
             <Nav>
               <NavDropdown title="About" id="basic-nav-dropdown">
@@ -110,8 +111,13 @@ function StudentDataApp() {
         )
         }
         {currentPage === "overseer" && (
-          <div>
-            <h4>Overseer Page under construction :)</h4>
+          <div className='container'>
+            <h4>Overseer Page under construction :) </h4>
+          </div>
+        )}
+        {currentPage === "student" && (
+          <div className='container'>
+            <h4>Student Page is also under construction ^^ </h4>
           </div>
         )}
       </main>
