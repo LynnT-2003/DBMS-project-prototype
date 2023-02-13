@@ -121,6 +121,34 @@ function StudentDataApp() {
       console.log({ usernameOverseer })
     }
   }
+
+
+  const [usernameStudent, setUsernameStudent] = useState("")
+  const [passwordStudent, setPasswordStudent] = useState("")
+  const [currentStudent, setCurrentStudent] = useState("")
+
+  const handleChangeStudent = event => {
+    if (event.target.name === "usernameStudent") {
+      setUsernameOverseer(event.target.value)
+    } else if (event.target.name === "password") {
+      setPasswordOverseer(event.target.value)
+    }
+  }
+
+
+  const handleLoginStudent = e => {
+    e.preventDefault()
+    if (students.includes(usernameStudent) && passwordStudent === "password") {
+      setIsLoggedInStudent(true)
+      setCurrentStudent(usernameStudent)
+    } else {
+      setIsLoggedInStudent(false)
+      alert("Incorrect username or password fucker")
+      console.table({ students })
+      console.log({ usernameStudent })
+    }
+  }
+
   const handleStartStudent = () => {
     setStartStudentHandling(!startStudentHandling)
     console.log({ startStudentHandling })
@@ -346,7 +374,8 @@ function StudentDataApp() {
                   <div className="button-area">
                     <B onClick={handleStartStudent}>Handle Students</B> <br />
                     <br />
-                    <B onClick={handleStartOverseer}>Handle Overseers</B>
+                    <B onClick={handleStartOverseer}>Handle Overseers</B> <br/><br/>
+                    <B>Review Reports</B> {"work in progress :')"}
                   </div>
                 )}
               </div>
@@ -432,7 +461,49 @@ function StudentDataApp() {
           </div>
         )}
 
-        {currentPage === "student" && (
+        {currentPage === "student" && !isLoggedInStudent && (
+          <div style={{ marginLeft: "40%", marginRight: "40%" }}>
+            <h1>Please login to continue</h1> <br />
+            <form onSubmit={handleLoginStudent} className="form">
+              <Input
+                type="text"
+                name="usernameStudent"
+                placeholder="Student ID"
+                value={usernameStudent}
+                onChange={handleChangeStudent}
+                className="form-input"
+              />{" "}
+              <br />
+              <br />
+              <Input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={handleChange}
+                className="form-input"
+              />{" "}
+              <br />
+              <br />
+              <a href="#" style={{ textDecoration: "none", color: "#AAA" }}>
+                Forgot password?
+              </a>
+              <br />
+              <br />
+              <B
+                width="full"
+                colorScheme="blue"
+                type="submit"
+                className="form-button"
+              >
+                Login
+              </B>
+            </form>
+          </div>
+        
+        )}
+
+        {currentPage === "student" && isLoggedInStudent && (
           <div className="container">
             <h4>Student Page is also under construction ^^ </h4>
           </div>
