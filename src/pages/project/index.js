@@ -122,32 +122,34 @@ function StudentDataApp() {
     }
   }
 
-
+  
   const [usernameStudent, setUsernameStudent] = useState("")
   const [passwordStudent, setPasswordStudent] = useState("")
   const [currentStudent, setCurrentStudent] = useState("")
 
   const handleChangeStudent = event => {
-    if (event.target.name === "usernameStudent") {
-      setUsernameOverseer(event.target.value)
+    if (event.target.name === "username") {
+      setUsernameStudent(event.target.value)
     } else if (event.target.name === "password") {
-      setPasswordOverseer(event.target.value)
+      setPasswordStudent(event.target.value)
     }
   }
 
 
   const handleLoginStudent = e => {
-    e.preventDefault()
-    if (students.includes(usernameStudent) && passwordStudent === "password") {
-      setIsLoggedInStudent(true)
-      setCurrentStudent(usernameStudent)
+    e.preventDefault();
+    const student = students.find(s => s.id === usernameStudent);
+    if (student && passwordStudent === "password") {
+      setIsLoggedInStudent(true);
+      setCurrentStudent(usernameStudent);
     } else {
-      setIsLoggedInStudent(false)
-      alert("Incorrect username or password fucker")
-      console.table({ students })
-      console.log({ usernameStudent })
+      setIsLoggedInStudent(false);
+      alert("Incorrect username or password");
+      console.table({ students });
+      console.log({ usernameStudent });
     }
-  }
+  };
+
 
   const handleStartStudent = () => {
     setStartStudentHandling(!startStudentHandling)
@@ -464,10 +466,11 @@ function StudentDataApp() {
         {currentPage === "student" && !isLoggedInStudent && (
           <div style={{ marginLeft: "40%", marginRight: "40%" }}>
             <h1>Please login to continue</h1> <br />
+            
             <form onSubmit={handleLoginStudent} className="form">
               <Input
                 type="text"
-                name="usernameStudent"
+                name="username"
                 placeholder="Student ID"
                 value={usernameStudent}
                 onChange={handleChangeStudent}
@@ -479,8 +482,8 @@ function StudentDataApp() {
                 type="password"
                 name="password"
                 placeholder="Password"
-                value={password}
-                onChange={handleChange}
+                value={passwordStudent}
+                onChange={handleChangeStudent}
                 className="form-input"
               />{" "}
               <br />
@@ -505,9 +508,51 @@ function StudentDataApp() {
 
         {currentPage === "student" && isLoggedInStudent && (
           <div className="container">
-            <h4>Student Page is also under construction ^^ </h4>
+          <h3>Welcome Student ID: {currentStudent}</h3>
+          <Table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>GPA</th>
+                <th>SCPA</th>
+                <th>Status</th>
+                <th>Monitored By</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students
+                .filter(student => student.id === currentStudent)
+                .map((student, index) => (
+                  <tr key={index}>
+                    <td>{student.id}</td>
+                    <td>{student.firstName}</td>
+                    <td>{student.lastName}</td>
+                    <td>{student.GPA}</td>
+                    <td>{student.SCPA}</td>
+                    <td>{student.status}</td>
+                    <td>{student.monitoredBy}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+            <Button
+              isDisabled={
+                students.filter(student => student.id === currentStudent)[0].GPA < 3.85 || 
+                students.filter(student => student.id === currentStudent)[0].SCPA < 3.85
+              }
+              style={{ backgroundColor: (
+                students.filter(student => student.id === currentStudent)[0].GPA >= 3.85 && 
+                students.filter(student => student.id === currentStudent)[0].SCPA >= 3.85
+              ) ? 'blue' : 'red'}}
+            >
+              Apply Scholarship
+            </Button>
+          <h4 style={{color:"red"}}>Student Page's full functionalities are also still under construction ^^</h4>
           </div>
         )}
+
       </main>
     </ChakraProvider>
   )
