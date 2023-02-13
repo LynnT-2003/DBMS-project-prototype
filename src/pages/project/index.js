@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import StudentForm from './StudentForm'
 import StudentList from './StudentList';
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Navbar, Nav, NavDropdown } from "react-bootstrap"
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap"
 import { useLocalStorage } from 'react-use';
 
 function StudentDataApp() {
@@ -17,6 +17,28 @@ function StudentDataApp() {
   function handlePage(page) {
     setCurrentPage(page)
   }
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleChange = event => {
+    if (event.target.name === "username") {
+      setUsername(event.target.value);
+    } else if (event.target.name === "password") {
+      setPassword(event.target.value);
+    }
+  };
+  const handleLogin = e => {
+    e.preventDefault();
+    if (username === "admin" && password === "password") {
+      setIsLoggedIn(true);
+    } else {
+      alert("Incorrect username or password. Please try again.");
+    }
+  };
+  
+
 
   const addStudent = (student) => {
     setStudents([...students, student]);
@@ -55,7 +77,7 @@ function StudentDataApp() {
       <div className='navbar-section' style={{marginBottom:"20px"}}>
 
         <Navbar expand="lg" style={{ backgroundColor: "#caf0f8" }}>
-          <Navbar.Brand style={{ marginLeft: "20px" }} href="#grade-tracker">
+          <Navbar.Brand style={{ marginLeft: "10px" }} href="#grade-tracker">
             SCPA Project
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -85,7 +107,35 @@ function StudentDataApp() {
 
       <main>
 
-        {currentPage === "admin" && (
+        {currentPage === "admin" && !isLoggedIn && (
+          <div className="container">
+            <h5>Login</h5>
+            <form onSubmit={handleLogin} className="form">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={username}
+                onChange={handleChange}
+                className="form-input"
+              /> <br/><br/>
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={password}
+                onChange={handleChange}
+                className="form-input"
+              /> <br/><br/>
+              <Button type="submit" className="form-button">
+                Login
+              </Button>
+            </form>
+          </div>
+        )}
+
+        {currentPage === "admin" && isLoggedIn && (
           <div className="container">
           <h5>Student Data Management</h5>
           <div className="form-container">

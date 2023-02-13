@@ -51,6 +51,7 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
         <Modal.Body>
           <label>Set new status for Student ID {selectedID}:</label>
           <select className='form-control' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
+            <option value="">select a new status</option>
             <option value="Active">Active</option>
             <option value="Frozen">Frozen</option>
             <option value="Scholarship">Scholarship</option>
