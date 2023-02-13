@@ -4,6 +4,17 @@ import StudentList from './StudentList';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap"
 import { useLocalStorage } from 'react-use';
+import {
+  ChakraProvider,
+  Button as B,
+  Box,
+  Heading,
+  Text,
+  VStack,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react"
 
 function StudentDataApp() {
   const [students, setStudents] = useLocalStorage("studentsData", []);
@@ -12,7 +23,7 @@ function StudentDataApp() {
   const [newStatus, setNewStatus] = useState("");
   const [showStatusModal, setShowStatusModal] = useState(false)
 
-  const [adminIDs, setAdminIDs] = useLocalStorage("AdminID List", ["O-1325", "O-1326", "O-1375"])
+  const [adminIDs, setAdminIDs] = useLocalStorage("AdminID List", ["A-1325", "A-1326", "A-1375"])
   const [currentAdminID, setCurrentAdminID] = useState("")
   const [startStudentHandling, setStartStudentHandling] = useState(false)
   const [startOverseerHandling, setStartOverseerHandling] = useState(false)
@@ -30,18 +41,21 @@ function StudentDataApp() {
   const handleChange = event => {
     if (event.target.name === "username") {
       setUsername(event.target.value);
-    } else if (event.target.name === "password") {
+    } else if (event.target.name === "password") {  
       setPassword(event.target.value);
     }
   };
-  const handleLogin = (e) => {
+  const handleLogin = (e) => { 
     e.preventDefault();
-    if (adminIDs.includes(username)) {
+    if (adminIDs.includes(username) && password === "password") {
       setIsLoggedInAdmin(true);
       setCurrentAdminID(username);
     } else {
       setIsLoggedInAdmin(false);
-      alert("Incorrect username or password");
+      alert("Incorrect username or password fucker");
+      console.table({adminIDs})
+      console.log({username})
+
     }
   };
 
@@ -90,54 +104,56 @@ function StudentDataApp() {
 
 
   return (
-    <>
-      <div className='navbar-section' style={{ marginBottom: "20px" }}>
-
-        <Navbar expand="lg" style={{ backgroundColor: "#caf0f8" }}>
-          <Navbar.Brand style={{ marginLeft: "10px" }} href="#grade-tracker">
-            SCPA Project
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="#admin" onClick={() => handlePage("admin")}>Admin</Nav.Link>
-              <Nav.Link href="#overseer" onClick={() => handlePage("overseer")}>Overseer</Nav.Link>
-              <Nav.Link href="#student" onClick={() => handlePage("student")}>Student</Nav.Link>
-            </Nav>
-            <Nav>
-              <NavDropdown title="About" id="basic-nav-dropdown">
-                <NavDropdown.Item
-                  href="#computer-science"
-                >
-                  Computer Science
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="#IT"
-                >
-                  IT
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-      </div>
+    <ChakraProvider>
+    <div className="navbar-section" style={{ marginBottom: "20px" }}>
+      <Navbar expand="lg" style={{ backgroundColor: "#3182CE" }}>
+        <Navbar.Brand
+          style={{ marginLeft: "100px", color: "white" }}
+          href="#grade-tracker"
+        >
+          SCPA Project
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="#admin" onClick={() => handlePage("admin")}>
+              Admin
+            </Nav.Link>
+            <Nav.Link href="#overseer" onClick={() => handlePage("overseer")}>
+              Overseer
+            </Nav.Link>
+            <Nav.Link href="#student" onClick={() => handlePage("student")}>
+              Student
+            </Nav.Link>
+          </Nav>
+          {/* <Nav>
+            <NavDropdown title="About" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#computer-science">
+                Computer Science
+              </NavDropdown.Item>
+              <NavDropdown.Item href="#IT">IT</NavDropdown.Item>
+            </NavDropdown>
+          </Nav> */}
+        </Navbar.Collapse>
+      </Navbar>
+    </div>
 
       <main>
 
         {currentPage === "admin" && !isLoggedInAdmin && (
-          <div className="container">
-            <h5>Login</h5>
+          <div style={{ marginLeft: "40%", marginRight: "40%" }}>
+            <h1>Please login to continue</h1> <br/>
             <form onSubmit={handleLogin} className="form">
-              <input
+              <Input
                 type="text"
                 name="username"
                 placeholder="Admin ID"
                 value={username}
                 onChange={handleChange}
                 className="form-input"
-              /> <br /><br />
+              /> {" "} <br /><br />
 
-              <input
+              <Input
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -145,17 +161,30 @@ function StudentDataApp() {
                 onChange={handleChange}
                 className="form-input"
               /> <br /><br />
-              <Button type="submit" className="form-button">
+              <a href="#" style={{ textDecoration: "none", color: "#AAA" }}>
+                Forgot password?
+              </a>
+              <br />
+              <br />
+              <B
+                width="full"
+                colorScheme="blue"
+                type="submit"
+                className="form-button"
+              >
                 Login
-              </Button>
+              </B>  
             </form>
           </div>
         )}
 
         {currentPage === "admin" && isLoggedInAdmin && (
           <div className="container">
-            <h3>Welcome  Admin {currentAdminID}</h3>
-            <h5>Student Data Management</h5>
+          <h2>
+            Student Data Management 
+          </h2>
+          <h5>Welcome AdminID: {currentAdminID}</h5>
+          <br />
 
             {startStudentHandling ?
               <>
@@ -178,9 +207,9 @@ function StudentDataApp() {
                     setShowStatusModal={setShowStatusModal}
                   />
                 </div>
-                <Button onClick={handleStartStudent}>
+                <B onClick={handleStartStudent}>
                   Back
-                </Button>
+                </B>
               </>
               :
               <div className='next'>
@@ -189,18 +218,18 @@ function StudentDataApp() {
                     <div>
                       <h6 style={{color:"red"}}>Overseer Handling under construction</h6>
                     </div>
-                    <Button onClick={handleStartOverseer}>
+                    <B onClick={handleStartOverseer}>
                       Back
-                    </Button>
+                    </B>
                   </>
                   :
                   <div className='button-area'>
-                    <Button onClick={handleStartStudent}>
+                    <B onClick={handleStartStudent}>
                       Handle Students
-                    </Button> <br/><br/>
-                    <Button onClick={handleStartOverseer}>
+                    </B> <br/><br/>
+                    <B onClick={handleStartOverseer}>
                       Handle Overseers
-                    </Button>
+                    </B>
                   </div>}
               </div>}
 
@@ -222,7 +251,7 @@ function StudentDataApp() {
       </main>
 
 
-    </>
+    </ChakraProvider>
   );
 }
 

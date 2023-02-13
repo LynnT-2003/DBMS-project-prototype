@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
-import { Table, Modal, Button } from 'react-bootstrap'
+import { Table, Modal } from "react-bootstrap"
+import { Button, Grid } from "@chakra-ui/react"
+
 import "./style.css"
 
 export default function StudentList({ students, removeStudent, setSelectedID, setNewStatus, handleUpdateStatus, newStatus, selectedID, showStatusModal, setShowStatusModal }) {
@@ -30,14 +32,20 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
               <td >{student.status}</td>
               <td >{student.monitoredBy}</td>
               <td>
-                <button onClick={() => removeStudent(student.id)}>
-                  Remove
-                </button>
-                <button
-                  onClick={() => {setSelectedID(student.id); 
-                    setShowStatusModal(true); console.log("showModal set to True")}}>
-                  Update
-                </button>
+                <Grid templateColumns="repeat(2, 1fr)" gap={3}>
+                  <Button onClick={() => removeStudent(student.id)}
+                    colorScheme="blue"
+                    size="xs">
+                    Remove
+                  </Button>
+                  <Button
+                    onClick={() => {setSelectedID(student.id); 
+                    setShowStatusModal(true); console.log("showModal set to True")}}
+                    colorScheme="blue"
+                    size="xs">
+                    Update
+                  </Button>
+                </Grid>
               </td>
             </tr>
           )):null}
@@ -56,14 +64,14 @@ export default function StudentList({ students, removeStudent, setSelectedID, se
             <option value="Frozen">Frozen</option>
             <option value="Scholarship">Scholarship</option>
             <option value="Graduated">Graduated</option>
-            <option value="dishonored">Dishonored</option>
+            <option value="Dishonored">Dishonored</option>
           </select>
         </Modal.Body>
 
         {/**
          * Set showModal to false on Update !
          */}
-        
+
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
             Close
