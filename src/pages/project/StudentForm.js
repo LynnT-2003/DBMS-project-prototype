@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Grid, Input, Select } from "@chakra-ui/react"
 import "./style.css"
 
-export default function StudentForm({ addStudent, students }) {
+export default function StudentForm({ addStudent, students, overseerIDs }) {
   const [student, setStudent] = useState({
     id: '',
     firstName: '',
@@ -109,14 +109,20 @@ export default function StudentForm({ addStudent, students }) {
             <option value="graduated">Graduated</option>
             <option value="dishonored">Dishonored</option>
           </Select>
-          <Input
-            type="text"
+
+          <Select
             name="monitoredBy"
-            placeholder="Monitored By"
             value={student.monitoredBy}
             onChange={handleChange}
             className="form-input"
-          />
+          >
+            <option value="">Monitored By:</option>
+            {overseerIDs.map((overseerID) => (
+              <option key={overseerID[0]} value={overseerID[0]}>
+                {overseerID[0]}
+              </option>
+            ))}
+          </Select>
         </Grid> <br />
 
         <Button type="submit" colorScheme="blue" size="md">
