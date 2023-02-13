@@ -24,9 +24,35 @@ function StudentDataApp() {
   const [showStatusModal, setShowStatusModal] = useState(false)
 
   const [adminIDs, setAdminIDs] = useLocalStorage("AdminID List", ["A-1325", "A-1326", "A-1375"])
+  const [overseerIDs, setOverseerIDs] = useLocalStorage("OverseerID List", [])
   const [currentAdminID, setCurrentAdminID] = useState("")
   const [startStudentHandling, setStartStudentHandling] = useState(false)
   const [startOverseerHandling, setStartOverseerHandling] = useState(false)
+
+  const [selectedOverseer, setSelectedOverseer] = useState("")
+
+  const handleOverseerSelection = (e) => {
+    setSelectedOverseer(e.target.value);
+  };
+
+  const handleStudentSelection = (e) => {
+    setSelectedID(e.target.value);
+  };
+
+  const handleAssignOverseer = () => {
+    if (selectedOverseer !== "" && selectedID !== "") {
+      const newPair = [selectedOverseer, selectedID];
+      setOverseerIDs([...overseerIDs, newPair]);
+      setSelectedOverseer("");
+      setSelectedID("");
+    }
+  };
+
+  function handleDeleteAssignment(index) {
+    const newList = [...overseerIDs];
+    newList.splice(index, 1);
+    setOverseerIDs(newList);
+  }
 
 
   const [currentPage, setCurrentPage] = useState("admin")
@@ -41,11 +67,11 @@ function StudentDataApp() {
   const handleChange = event => {
     if (event.target.name === "username") {
       setUsername(event.target.value);
-    } else if (event.target.name === "password") {  
+    } else if (event.target.name === "password") {
       setPassword(event.target.value);
     }
   };
-  const handleLogin = (e) => { 
+  const handleLogin = (e) => {
     e.preventDefault();
     if (adminIDs.includes(username) && password === "password") {
       setIsLoggedInAdmin(true);
@@ -53,8 +79,8 @@ function StudentDataApp() {
     } else {
       setIsLoggedInAdmin(false);
       alert("Incorrect username or password fucker");
-      console.table({adminIDs})
-      console.log({username})
+      console.table({ adminIDs })
+      console.log({ username })
 
     }
   };
@@ -105,28 +131,28 @@ function StudentDataApp() {
 
   return (
     <ChakraProvider>
-    <div className="navbar-section" style={{ marginBottom: "20px" }}>
-      <Navbar expand="lg" style={{ backgroundColor: "#3182CE" }}>
-        <Navbar.Brand
-          style={{ marginLeft: "100px", color: "white" }}
-          href="#grade-tracker"
-        >
-          SCPA Project
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <Nav.Link href="#admin" onClick={() => handlePage("admin")}>
-              Admin
-            </Nav.Link>
-            <Nav.Link href="#overseer" onClick={() => handlePage("overseer")}>
-              Overseer
-            </Nav.Link>
-            <Nav.Link href="#student" onClick={() => handlePage("student")}>
-              Student
-            </Nav.Link>
-          </Nav>
-          {/* <Nav>
+      <div className="navbar-section" style={{ marginBottom: "20px" }}>
+        <Navbar expand="lg" style={{ backgroundColor: "#3182CE" }}>
+          <Navbar.Brand
+            style={{ marginLeft: "100px", color: "white" }}
+            href="#grade-tracker"
+          >
+            SCPA Project
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="#admin" onClick={() => handlePage("admin")}>
+                Admin
+              </Nav.Link>
+              <Nav.Link href="#overseer" onClick={() => handlePage("overseer")}>
+                Overseer
+              </Nav.Link>
+              <Nav.Link href="#student" onClick={() => handlePage("student")}>
+                Student
+              </Nav.Link>
+            </Nav>
+            {/* <Nav>
             <NavDropdown title="About" id="basic-nav-dropdown">
               <NavDropdown.Item href="#computer-science">
                 Computer Science
@@ -134,15 +160,15 @@ function StudentDataApp() {
               <NavDropdown.Item href="#IT">IT</NavDropdown.Item>
             </NavDropdown>
           </Nav> */}
-        </Navbar.Collapse>
-      </Navbar>
-    </div>
+          </Navbar.Collapse>
+        </Navbar>
+      </div>
 
       <main>
 
         {currentPage === "admin" && !isLoggedInAdmin && (
           <div style={{ marginLeft: "40%", marginRight: "40%" }}>
-            <h1>Please login to continue</h1> <br/>
+            <h1>Please login to continue</h1> <br />
             <form onSubmit={handleLogin} className="form">
               <Input
                 type="text"
@@ -173,18 +199,18 @@ function StudentDataApp() {
                 className="form-button"
               >
                 Login
-              </B>  
+              </B>
             </form>
           </div>
         )}
 
         {currentPage === "admin" && isLoggedInAdmin && (
           <div className="container">
-          <h2>
-            Student Data Management 
-          </h2>
-          <h5>Welcome AdminID: {currentAdminID}</h5>
-          <br />
+            <h2>
+              Student Data Management
+            </h2>
+            <h5>Welcome AdminID: {currentAdminID}</h5>
+            <br />
 
             {startStudentHandling ?
               <>
@@ -216,7 +242,53 @@ function StudentDataApp() {
                 {startOverseerHandling ?
                   <>
                     <div>
-                      <h6 style={{color:"red"}}>Overseer Handling under construction</h6>
+                      <h6 style={{ color: "red" }}>Overseer Assignment</h6>
+                        <div>
+                          <div>
+                          <label>Enter Overseer ID:</label>
+                            <input
+                              type="text"
+                              name="overseer"
+                              placeholder="Enter Overseer ID"
+                              value={selectedOverseer}
+                              onChange={handleOverseerSelection}
+                              className="form-input"
+                            />
+                          </div>
+                          <div>
+                            <label>Select Student:</label>
+                            <select value={selectedID} onChange={handleStudentSelection}>
+                              <option value="">Select Student</option>
+                              {students.map((student) => (
+                                <option key={student.id} value={student.id}>
+                                  {student.id}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <button onClick={handleAssignOverseer}>Assign</button>
+                          {overseerIDs.length > 0 && (
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>Overseer ID</th>
+                                  <th>Student ID</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {overseerIDs.map((pair, index) => (
+                                  <tr key={index}>
+                                    <td>{pair[0]}</td>
+                                    <td>{pair[1]}</td>
+                                    <td>
+                                      <button onClick={() => handleDeleteAssignment(index)}>Delete</button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </div>
                     </div>
                     <B onClick={handleStartOverseer}>
                       Back
@@ -226,7 +298,7 @@ function StudentDataApp() {
                   <div className='button-area'>
                     <B onClick={handleStartStudent}>
                       Handle Students
-                    </B> <br/><br/>
+                    </B> <br /><br />
                     <B onClick={handleStartOverseer}>
                       Handle Overseers
                     </B>
