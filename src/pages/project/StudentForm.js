@@ -104,10 +104,10 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             className="form-input"
           >
             <option value="">Select a status</option>
-            <option value="active">Active</option>
-            <option value="scholarship">Scholarship</option>
-            <option value="graduated">Graduated</option>
-            <option value="dishonored">Dishonored</option>
+            <option value="Active">Active</option>
+            <option value="Scholarship">Scholarship</option>
+            <option value="Graduated">Graduated</option>
+            <option value="Dishonored">Dishonored</option>
           </Select>
 
           <Select
@@ -117,11 +117,11 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             className="form-input"
           >
             <option value="">Monitored By:</option>
-            {overseerIDs.map((overseerID) => (
+            {overseerIDs ? overseerIDs.map((overseerID) => (
               <option key={overseerID[0]} value={overseerID[0]}>
                 {overseerID[0]}
               </option>
-            ))}
+            )) : null }
           </Select>
         </Grid> <br />
 
