@@ -666,13 +666,6 @@ function StudentDataApp() {
 
                       <p>{student.status}</p>
                     </div>
-                    <div className="card-item">
-                      <p>
-                        <b>Monitored By:</b>
-                      </p>
-
-                      <p>{student.monitoredBy}</p>
-                    </div>
                   </div>
                 ))}
               <br />
