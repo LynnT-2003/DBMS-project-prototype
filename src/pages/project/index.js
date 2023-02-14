@@ -14,9 +14,13 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Alert,
+  AlertIcon,
   Select,
   Table as T,
 } from "@chakra-ui/react"
+
+import scpa from "../../images/scpa_logo.png"
 
 function StudentDataApp() {
   const [students, setStudents] = useLocalStorage("studentsData", [])
@@ -33,12 +37,14 @@ function StudentDataApp() {
     "A-1326",
     "A-1375",
   ])
-  const [overseerIDs, setOverseerIDs] = useLocalStorage("OverseerID List", [["O-001","Special"]])
+  const [overseerIDs, setOverseerIDs] = useLocalStorage("OverseerID List", [
+    ["O-001", "Special"],
+  ])
   const [currentAdminID, setCurrentAdminID] = useState("")
   const [startStudentHandling, setStartStudentHandling] = useState(false)
   const [startOverseerHandling, setStartOverseerHandling] = useState(false)
-
   const [selectedOverseer, setSelectedOverseer] = useState("")
+  const [showAlert, setShowAlert] = useState(false)
 
   const handleOverseerSelection = e => {
     setSelectedOverseer(e.target.value)
@@ -63,13 +69,21 @@ function StudentDataApp() {
     setOverseerIDs(newList)
   }
 
+  function displayAlert() {
+    setShowAlert(true)
+  }
+
+  function notDisplayAlert() {
+    setShowAlert(false)
+  }
+
   const [currentPage, setCurrentPage] = useState("admin")
   function handlePage(page) {
     setCurrentPage(page)
   }
 
   const [isLoggedInAdmin, setIsLoggedInAdmin] = useState(false)
-  const [isLoggedInOverseer, setIsLoggedInOverseer]  = useState(false)
+  const [isLoggedInOverseer, setIsLoggedInOverseer] = useState(false)
   const [isLoggedInStudent, setIsLoggedInStudent] = useState(false)
 
   const [username, setUsername] = useState("")
@@ -78,6 +92,7 @@ function StudentDataApp() {
   const handleChange = event => {
     if (event.target.name === "username") {
       setUsername(event.target.value)
+      notDisplayAlert()
     } else if (event.target.name === "password") {
       setPassword(event.target.value)
     }
@@ -90,12 +105,11 @@ function StudentDataApp() {
       setCurrentAdminID(username)
     } else {
       setIsLoggedInAdmin(false)
-      alert("Incorrect username or password fucker")
+      displayAlert()
       console.table({ adminIDs })
       console.log({ username })
     }
   }
-
 
   const [usernameOverseer, setUsernameOverseer] = useState("")
   const [passwordOverseer, setPasswordOverseer] = useState("")
@@ -104,6 +118,7 @@ function StudentDataApp() {
   const handleChangeOverseer = event => {
     if (event.target.name === "username") {
       setUsernameOverseer(event.target.value)
+      notDisplayAlert()
     } else if (event.target.name === "password") {
       setPasswordOverseer(event.target.value)
     }
@@ -111,18 +126,22 @@ function StudentDataApp() {
 
   const handleLoginOverseer = e => {
     e.preventDefault()
-    if (overseerIDs[0].includes(usernameOverseer) && passwordOverseer === "password") {
+    const overseer = overseerIDs.find(overseerID => overseerID[0] === usernameOverseer)
+    if (
+      overseer &&
+      passwordOverseer === "password"
+    ) {
       setIsLoggedInOverseer(true)
       setCurrentOverseer(usernameOverseer)
+      notDisplayAlert()
     } else {
       setIsLoggedInOverseer(false)
-      alert("Incorrect username or password fucker")
+      displayAlert()
       console.table({ overseerIDs })
       console.log({ usernameOverseer })
     }
   }
 
-  
   const [usernameStudent, setUsernameStudent] = useState("")
   const [passwordStudent, setPasswordStudent] = useState("")
   const [currentStudent, setCurrentStudent] = useState("")
@@ -130,26 +149,25 @@ function StudentDataApp() {
   const handleChangeStudent = event => {
     if (event.target.name === "username") {
       setUsernameStudent(event.target.value)
+      notDisplayAlert()
     } else if (event.target.name === "password") {
       setPasswordStudent(event.target.value)
     }
   }
 
-
   const handleLoginStudent = e => {
-    e.preventDefault();
-    const student = students.find(s => s.id === usernameStudent);
+    e.preventDefault()
+    const student = students.find(s => s.id === usernameStudent)
     if (student && passwordStudent === "password") {
-      setIsLoggedInStudent(true);
-      setCurrentStudent(usernameStudent);
+      setIsLoggedInStudent(true)
+      setCurrentStudent(usernameStudent)
     } else {
-      setIsLoggedInStudent(false);
-      alert("Incorrect username or password");
-      console.table({ students });
-      console.log({ usernameStudent });
+      setIsLoggedInStudent(false)
+      displayAlert()
+      console.table({ students })
+      console.log({ usernameStudent })
     }
-  };
-
+  }
 
   const handleStartStudent = () => {
     setStartStudentHandling(!startStudentHandling)
@@ -206,13 +224,25 @@ function StudentDataApp() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse className="my-margin" id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link href="#admin" onClick={() => handlePage("admin")}>
+              <Nav.Link
+                href="#admin"
+                style={{ color: "white" }}
+                onClick={() => handlePage("admin")}
+              >
                 Admin
               </Nav.Link>
-              <Nav.Link href="#overseer" onClick={() => handlePage("overseer")}>
+              <Nav.Link
+                href="#overseer"
+                style={{ color: "white" }}
+                onClick={() => handlePage("overseer")}
+              >
                 Overseer
               </Nav.Link>
-              <Nav.Link href="#student" onClick={() => handlePage("student")}>
+              <Nav.Link
+                href="#student"
+                style={{ color: "white" }}
+                onClick={() => handlePage("student")}
+              >
                 Student
               </Nav.Link>
             </Nav>
@@ -230,8 +260,11 @@ function StudentDataApp() {
 
       <main>
         {currentPage === "admin" && !isLoggedInAdmin && (
-          <div style={{ marginLeft: "40%", marginRight: "40%" }}>
-            <h1>Please login to continue</h1> <br />
+          <div
+            style={{ marginLeft: "40%", marginRight: "40%", paddingTop: "5%" }}
+          >
+            <img src={scpa} alt="logo" />
+            <h5>Please login to continue</h5> <br />
             <form onSubmit={handleLogin} className="form">
               <Input
                 type="text"
@@ -266,6 +299,14 @@ function StudentDataApp() {
               >
                 Login
               </B>
+              <br />
+              <br />
+              {showAlert && (
+                <Alert status="error">
+                  <AlertIcon />
+                  Wrong Username or Password, Please try again!
+                </Alert>
+              )}
             </form>
           </div>
         )}
@@ -273,13 +314,18 @@ function StudentDataApp() {
         {currentPage === "admin" && isLoggedInAdmin && (
           <div className="container">
             <h2>Student Data Management</h2>
+            <br />
             <h5>Welcome AdminID: {currentAdminID}</h5>
             <br />
 
             {startStudentHandling ? (
               <>
                 <div className="form-container">
-                  <StudentForm addStudent={addStudent} students={students} overseerIDs={overseerIDs} />
+                  <StudentForm
+                    addStudent={addStudent}
+                    students={students}
+                    overseerIDs={overseerIDs}
+                  />
                 </div>
                 <div className="table-container">
                   <StudentList
@@ -376,7 +422,8 @@ function StudentDataApp() {
                   <div className="button-area">
                     <B onClick={handleStartStudent}>Handle Students</B> <br />
                     <br />
-                    <B onClick={handleStartOverseer}>Handle Overseers</B> <br/><br/>
+                    <B onClick={handleStartOverseer}>Handle Overseers</B> <br />
+                    <br />
                     <B>Review Reports</B> {"work in progress :')"}
                   </div>
                 )}
@@ -385,9 +432,11 @@ function StudentDataApp() {
           </div>
         )}
         {currentPage === "overseer" && !isLoggedInOverseer && (
-          <div className="container">
-          <div style={{ marginLeft: "40%", marginRight: "40%" }}>
-            <h1>Please login to continue</h1> <br />
+          <div
+            style={{ marginLeft: "40%", marginRight: "40%", paddingTop: "5%" }}
+          >
+            <img src={scpa} alt="logo" />
+            <h5>Please login to continue</h5> <br />
             <form onSubmit={handleLoginOverseer} className="form">
               <Input
                 type="text"
@@ -422,15 +471,25 @@ function StudentDataApp() {
               >
                 Login
               </B>
+              <br />
+              <br />
+              {showAlert && (
+                <Alert status="error">
+                  <AlertIcon />
+                  Wrong Username or Password, Please try again!
+                </Alert>
+              )}
             </form>
-          </div>
           </div>
         )}
 
-        {currentPage === "overseer" && isLoggedInOverseer &&(
+        {currentPage === "overseer" && isLoggedInOverseer && (
           <div className="container">
             <h3>Welcome Overseer ID: {currentOverseer}</h3>
             <h5>List of students under supervision:</h5>
+            <br />
+            <br />
+            <br />
             <Table>
               <thead>
                 <tr>
@@ -445,7 +504,7 @@ function StudentDataApp() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
+                {students.map(student => (
                   <tr key={student.id}>
                     <td>{student.id}</td>
                     <td>{student.firstName}</td>
@@ -454,19 +513,29 @@ function StudentDataApp() {
                     <td>{student.SCPA}</td>
                     <td>{student.status}</td>
                     <td>{student.monitoredBy}</td>
-                    <td><Button>Award CP</Button>&nbsp;<Button>File Report</Button></td>
+                    <td>
+                      <B colorScheme={"blue"}>Award CP</B>&nbsp;
+                      <B colorScheme={"blue"}>File Report</B>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
-            <h4 style={{color:"red"}}>Overseer Page's full functionalities still under construction :) </h4>
+            <br />
+            <br />
+            <br />
+            <h4 style={{ color: "red" }}>
+              Overseer Page's full functionalities still under construction :){" "}
+            </h4>
           </div>
         )}
 
         {currentPage === "student" && !isLoggedInStudent && (
-          <div style={{ marginLeft: "40%", marginRight: "40%" }}>
-            <h1>Please login to continue</h1> <br />
-            
+          <div
+            style={{ marginLeft: "40%", marginRight: "40%", paddingTop: "5%" }}
+          >
+            <img src={scpa} alt="logo" />
+            <h5>Please login to continue</h5> <br />
             <form onSubmit={handleLoginStudent} className="form">
               <Input
                 type="text"
@@ -501,58 +570,138 @@ function StudentDataApp() {
               >
                 Login
               </B>
+              <br />
+              <br />
+              {showAlert && (
+                <Alert status="error">
+                  <AlertIcon />
+                  Wrong Username or Password, Please try again!
+                </Alert>
+              )}
             </form>
           </div>
-        
         )}
 
         {currentPage === "student" && isLoggedInStudent && (
           <div className="container">
-          <h3>Welcome Student ID: {currentStudent}</h3>
-          <Table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>GPA</th>
-                <th>SCPA</th>
-                <th>Status</th>
-                <th>Monitored By</th>
-              </tr>
-            </thead>
-            <tbody>
+            {/* <h3>Welcome Student ID: {currentStudent}</h3> */}
+            <br />
+            <br />
+
+            {/* <Table>
+              <thead>
+                <tr>
+                  <th>student ID</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>GPA</th>
+                  <th>SCPA</th>
+                  <th>Status</th>
+                  <th>Monitored By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students
+                  .filter(student => student.id === currentStudent)
+                  .map((student, index) => (
+                    <tr key={index}>
+                      <td>{student.id}</td>
+                      <td>{student.firstName}</td>
+                      <td>{student.lastName}</td>
+                      <td>{student.GPA}</td>
+                      <td>{student.SCPA}</td>
+                      <td>{student.status}</td>
+                      <td>{student.monitoredBy}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table> */}
+
+            <div className="student-card">
+              <h3>Welcome Student ID: {currentStudent}</h3>
+              <br />
+              <br />
               {students
                 .filter(student => student.id === currentStudent)
                 .map((student, index) => (
-                  <tr key={index}>
-                    <td>{student.id}</td>
-                    <td>{student.firstName}</td>
-                    <td>{student.lastName}</td>
-                    <td>{student.GPA}</td>
-                    <td>{student.SCPA}</td>
-                    <td>{student.status}</td>
-                    <td>{student.monitoredBy}</td>
-                  </tr>
+                  <div key={index} className="card-info">
+                    <div className="card-item">
+                      <p>
+                        <b>Student ID:&nbsp; </b>
+                      </p>
+                      <p>{student.id}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>First Name</b>
+                      </p>
+
+                      <p>{student.firstName}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>Last Name:</b>
+                      </p>
+
+                      <p>{student.lastName}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>GPA:</b>
+                      </p>
+
+                      <p>{student.GPA}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>SCPA:</b>
+                      </p>
+
+                      <p>{student.SCPA}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>Status:</b>
+                      </p>
+
+                      <p>{student.status}</p>
+                    </div>
+                    <div className="card-item">
+                      <p>
+                        <b>Monitored By:</b>
+                      </p>
+
+                      <p>{student.monitoredBy}</p>
+                    </div>
+                  </div>
                 ))}
-            </tbody>
-          </Table>
-            <Button
-              isDisabled={
-                students.filter(student => student.id === currentStudent)[0].GPA < 3.85 || 
-                students.filter(student => student.id === currentStudent)[0].SCPA < 3.85
-              }
-              style={{ backgroundColor: (
-                students.filter(student => student.id === currentStudent)[0].GPA >= 3.85 && 
-                students.filter(student => student.id === currentStudent)[0].SCPA >= 3.85
-              ) ? 'blue' : 'red'}}
-            >
-              Apply Scholarship
-            </Button>
-          <h4 style={{color:"red"}}>Student Page's full functionalities are also still under construction ^^</h4>
+              <br />
+              <B
+                colorScheme={"blue"}
+                isDisabled={
+                  students.filter(student => student.id === currentStudent)[0]
+                    .GPA < 3.85 ||
+                  students.filter(student => student.id === currentStudent)[0]
+                    .SCPA < 3.85
+                }
+              >
+                Apply Scholarship
+              </B>
+            </div>
+
+            <br />
+            <br />
+
+            <br />
+            <br />
+            <br />
+
+            <h4 style={{ color: "red" }}>
+              Student Page's full functionalities are also still under
+              construction ^^
+            </h4>
           </div>
         )}
-
       </main>
     </ChakraProvider>
   )
