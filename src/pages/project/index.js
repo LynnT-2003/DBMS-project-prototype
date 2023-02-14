@@ -111,6 +111,11 @@ function StudentDataApp() {
     }
   }
 
+  const handleLogout = () => {
+    setIsLoggedInAdmin(false)
+    setCurrentAdminID("")
+  }
+
   const [usernameOverseer, setUsernameOverseer] = useState("")
   const [passwordOverseer, setPasswordOverseer] = useState("")
   const [currentOverseer, setCurrentOverseer] = useState("")
@@ -142,6 +147,11 @@ function StudentDataApp() {
     }
   }
 
+  const handleLogoutOverseer = () => {
+    setIsLoggedInOverseer(false)
+    setCurrentOverseer("")
+  }
+
   const [usernameStudent, setUsernameStudent] = useState("")
   const [passwordStudent, setPasswordStudent] = useState("")
   const [currentStudent, setCurrentStudent] = useState("")
@@ -167,6 +177,11 @@ function StudentDataApp() {
       console.table({ students })
       console.log({ usernameStudent })
     }
+  }
+
+  const handleLogoutStudent = () => {
+    setIsLoggedInStudent(false)
+    setCurrentStudent("")
   }
 
   const handleStartStudent = () => {
@@ -424,7 +439,9 @@ function StudentDataApp() {
                     <br />
                     <B onClick={handleStartOverseer}>Handle Overseers</B> <br />
                     <br />
-                    <B>Review Reports</B> {"work in progress :')"}
+                    <B>Review Reports</B> <br/> <br/>
+                    
+                    <B colorScheme="red" onClick={handleLogout}>Logout</B>
                   </div>
                 )}
               </div>
@@ -522,11 +539,7 @@ function StudentDataApp() {
               </tbody>
             </Table>
             <br />
-            <br />
-            <br />
-            <h4 style={{ color: "red" }}>
-              Overseer Page's full functionalities still under construction :){" "}
-            </h4>
+            <B colorScheme="red" onClick={handleLogoutOverseer}>Logout</B>
           </div>
         )}
 
@@ -585,8 +598,6 @@ function StudentDataApp() {
         {currentPage === "student" && isLoggedInStudent && (
           <div className="container">
             {/* <h3>Welcome Student ID: {currentStudent}</h3> */}
-            <br />
-            <br />
 
             {/* <Table>
               <thead>
@@ -679,20 +690,10 @@ function StudentDataApp() {
                 }
               >
                 Apply Scholarship
-              </B>
+              </B> <br/>
+              <B colorScheme="red" onClick={handleLogoutStudent}>Logout</B>
             </div>
-
-            <br />
-            <br />
-
-            <br />
-            <br />
-            <br />
-
-            <h4 style={{ color: "red" }}>
-              Student Page's full functionalities are also still under
-              construction ^^
-            </h4>
+            <div style={{alignItems:"center"}}></div>
           </div>
         )}
       </main>
