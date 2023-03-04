@@ -118,6 +118,10 @@ function StudentDataApp() {
         })
         .catch(error => {
           console.log(error)
+
+          alert(
+            "Could not add overseer successfully into the database. Please try again"
+          )
         })
       setSelectedOverseer("")
       setSelectedID("")
@@ -457,9 +461,12 @@ function StudentDataApp() {
                             onChange={handleStudentSelection} // sets selectedID
                           >
                             <option value="">Select Student</option>
-                            {students.map(student => (
-                              <option key={student.id} value={student.id}>
-                                {student.id}
+                            {students_db.map(student => (
+                              <option
+                                key={student.student_id}
+                                value={student.student_id}
+                              >
+                                {student.student_id}
                               </option>
                             ))}
                           </Select>

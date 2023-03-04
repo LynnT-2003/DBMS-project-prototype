@@ -130,7 +130,6 @@ app.post("/api/assignOverseer", (req, res) => {
   const { overseerID, studentID } = req.body
   const params = [overseerID, studentID]
 
-  // If both IDs are valid, update the 'Overseers' table with the new pairing
   const insertQuery =
     "INSERT INTO overseers (overseer_id, student_id) VALUES (?, ?)"
 
