@@ -48,7 +48,9 @@ function StudentDataApp() {
     try {
       const response = await axios.get("http://localhost:3000/api/overseers")
       setOverseers(response.data)
-      console.log(overseers)
+      console.log(
+        "Fetching overseers API from http://localhost:3000/api/overseers"
+      )
     } catch (error) {
       console.log(error)
     }
@@ -122,10 +124,23 @@ function StudentDataApp() {
     }
   }
 
-  function handleDeleteAssignment(index) {
-    const newList = [...overseerIDs]
-    newList.splice(index, 1)
-    setOverseerIDs(newList)
+  // function handleDeleteAssignment(index) {
+  //   const newList = [...overseerIDs]
+  //   newList.splice(index, 1)
+  //   setOverseerIDs(newList)
+  // }
+
+  const handleDeleteOverseer = id => {
+    axios
+      .delete(`http://localhost:3000/api/overseers/${id}`)
+      .then(response => {
+        console.log(`Overseer with id ${id} deleted successfully`)
+        // Update the list of overseers
+        fetchOverseers()
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   function displayAlert() {
@@ -503,7 +518,16 @@ function StudentDataApp() {
                                   <td>{overseer.student_id}</td>
                                   <td>
                                     <br />
-                                    <B colorScheme="red">Delete</B>
+                                    <B
+                                      colorScheme="red"
+                                      onClick={() =>
+                                        handleDeleteOverseer(
+                                          overseer.overseer_id
+                                        )
+                                      }
+                                    >
+                                      Delete
+                                    </B>
                                   </td>
                                 </tr>
                               ))}

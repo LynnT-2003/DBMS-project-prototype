@@ -145,6 +145,21 @@ app.post("/api/assignOverseer", (req, res) => {
   })
 })
 
+// Endpoint to delete an overseer by ID
+app.delete("/api/overseers/:id", (req, res) => {
+  const id = req.params.id
+  const sql = "DELETE FROM overseers WHERE overseer_id = ?"
+  db.query(sql, [id], error => {
+    if (error) {
+      console.log(error)
+      res.sendStatus(500)
+    } else {
+      console.log(`Overseer with id ${id} deleted successfully`)
+      res.sendStatus(204) // success, no content
+    }
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")
