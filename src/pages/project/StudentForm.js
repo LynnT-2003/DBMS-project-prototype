@@ -1,44 +1,84 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from "react"
 import { Button, Grid, Input, Select } from "@chakra-ui/react"
 import "./style.css"
+import axios from "axios"
 
 export default function StudentForm({ addStudent, students, overseerIDs }) {
   const [student, setStudent] = useState({
-    id: '',
-    firstName: '',
-    lastName: '',
-    GPA: '',
-    SCPA: '',
-    status: '',
-    monitoredBy: '',
-  });
+    id: "",
+    firstName: "",
+    lastName: "",
+    GPA: "",
+    SCPA: "",
+    status: "",
+    email: "",
+    monitoredBy: "",
+  })
+  const [overseers, setOverseers] = useState([])
 
-  const handleChange = (event) => {
-    setStudent({ ...student, [event.target.name]: event.target.value });
-  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/overseers")
+      .then(response => {
+        setOverseers(response.data)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleChange = event => {
+    setStudent({ ...student, [event.target.name]: event.target.value })
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault()
 
     console.table(students)
+    axios
+      .get("http://localhost:3000/api/students")
+      .then(response => {
+        const studentExists = response.data.some(stu => stu.id === student.id)
+        if (studentExists) {
+          alert("A student with the same ID already exists")
+          return
+        }
+        axios
+          .post("http://localhost:3000/addStudent", student)
+          .then(response => {
+            console.log(response.data)
+            setStudent([...students, student])
+            setStudent({
+              id: "",
+              firstName: "",
+              lastName: "",
+              GPA: "",
+              SCPA: "",
+              status: "",
+              monitoredBy: "",
+            })
+            window.location.reload()
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      })
+      .catch(error => {
+        console.log(error)
+      })
 
-    const studentExists = students.some((stu) => stu.id === student.id);
-    if (studentExists) {
-      alert("A student with the same ID already exists");
-      return;
-    }
-
-    addStudent({ ...student });
+    addStudent({ ...student })
     setStudent({
-      id: '',
-      firstName: '',
-      lastName: '',
-      GPA: '',
-      SCPA: '',
-      status: '',
-      monitoredBy: '',
-    });
-  };
+      id: "",
+      firstName: "",
+      lastName: "",
+      GPA: "",
+      SCPA: "",
+      status: "",
+      email: "",
+      monitoredBy: "",
+    })
+  }
 
   return (
     <div>
@@ -69,11 +109,8 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             className="form-input"
           />
         </Grid>
-
         <br />
-
         <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-
           <Input
             type="text"
             name="GPA"
@@ -90,13 +127,9 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             onChange={handleChange}
             className="form-input"
           />
-
         </Grid>
-
         <br />
-
         <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-
           <Select
             name="status"
             value={student.status}
@@ -110,6 +143,15 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             <option value="Dishonored">Dishonored</option>
           </Select>
 
+          <Input
+            type="text"
+            name="email"
+            placeholder="email"
+            value={student.email}
+            onChange={handleChange}
+            className="form-input"
+          />
+
           <Select
             name="monitoredBy"
             value={student.monitoredBy}
@@ -117,21 +159,25 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             className="form-input"
           >
             <option value="">Monitored By:</option>
-            {overseerIDs ? overseerIDs.map((overseerID) => (
-              <option key={overseerID[0]} value={overseerID[0]}>
-                {overseerID[0]}
-              </option>
-            )) : null }
+            {overseers
+              ? overseers.map(overseerID => (
+                  <option
+                    key={overseerID.overseer_id}
+                    value={overseerID.overseer_id}
+                  >
+                    {overseerID.overseer_id}
+                  </option>
+                ))
+              : null}
           </Select>
-        </Grid> <br />
-
+        </Grid>{" "}
+        <br />
         <Button type="submit" colorScheme="blue" size="md">
           Add Student
         </Button>
-
         <br />
         <br />
-
-      </form></div>
+      </form>
+    </div>
   )
 }

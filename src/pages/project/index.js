@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import StudentForm from "./StudentForm"
 import StudentList from "./StudentList"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -28,6 +28,7 @@ function StudentDataApp() {
     "scholarshipList",
     []
   )
+
   const [selectedID, setSelectedID] = useState(null)
   const [newStatus, setNewStatus] = useState("")
   const [showStatusModal, setShowStatusModal] = useState(false)
@@ -131,11 +132,10 @@ function StudentDataApp() {
 
   const handleLoginOverseer = e => {
     e.preventDefault()
-    const overseer = overseerIDs.find(overseerID => overseerID[0] === usernameOverseer)
-    if (
-      overseer &&
-      passwordOverseer === "password"
-    ) {
+    const overseer = overseerIDs.find(
+      overseerID => overseerID[0] === usernameOverseer
+    )
+    if (overseer && passwordOverseer === "password") {
       setIsLoggedInOverseer(true)
       setCurrentOverseer(usernameOverseer)
       notDisplayAlert()
@@ -439,9 +439,10 @@ function StudentDataApp() {
                     <br />
                     <B onClick={handleStartOverseer}>Handle Overseers</B> <br />
                     <br />
-                    <B>Review Reports</B> <br/> <br/>
-                    
-                    <B colorScheme="red" onClick={handleLogout}>Logout</B>
+                    <B>Review Reports</B> <br /> <br />
+                    <B colorScheme="red" onClick={handleLogout}>
+                      Logout
+                    </B>
                   </div>
                 )}
               </div>
@@ -539,7 +540,9 @@ function StudentDataApp() {
               </tbody>
             </Table>
             <br />
-            <B colorScheme="red" onClick={handleLogoutOverseer}>Logout</B>
+            <B colorScheme="red" onClick={handleLogoutOverseer}>
+              Logout
+            </B>
           </div>
         )}
 
@@ -690,10 +693,13 @@ function StudentDataApp() {
                 }
               >
                 Apply Scholarship
-              </B> <br/>
-              <B colorScheme="red" onClick={handleLogoutStudent}>Logout</B>
+              </B>{" "}
+              <br />
+              <B colorScheme="red" onClick={handleLogoutStudent}>
+                Logout
+              </B>
             </div>
-            <div style={{alignItems:"center"}}></div>
+            <div style={{ alignItems: "center" }}></div>
           </div>
         )}
       </main>
