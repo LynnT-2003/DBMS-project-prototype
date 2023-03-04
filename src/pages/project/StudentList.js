@@ -33,19 +33,6 @@ export default function StudentList({
       })
   }, [deletedStudentId, students, tableVersion])
 
-  const removeStudentHandler = student_id => {
-    axios
-      .delete(`http://localhost:3000/api/students/delete/${student_id}`)
-      .then(response => {
-        console.log(response.data)
-        setDeletedStudentId(student_id)
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    removeStudent(student_id)
-  }
-
   const handleUpdateStatusDB = () => {
     axios
       .put(`http://localhost:3000/api/students/updateStatus/${selectedID}`, {
