@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import axios from "axios"
 import StudentForm from "./StudentForm"
 import StudentList from "./StudentList"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -24,10 +25,54 @@ import scpa from "../../images/scpa_logo.png"
 
 function StudentDataApp() {
   const [students, setStudents] = useLocalStorage("studentsData", [])
+  const [students_db, setStudentsDB] = useState([])
   const [scholarshipStudents, setScholarshipStudents] = useLocalStorage(
     "scholarshipList",
     []
   )
+  const [overseers, setOverseers] = useState([])
+
+  // Fetch initial data on component mount
+  useEffect(() => {
+    fetchOverseers()
+  }, [])
+
+  // Fetch data every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(fetchOverseers, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const fetchOverseers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/overseers")
+      setOverseers(response.data)
+      console.log(overseers)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/students")
+      .then(response => {
+        setStudentsDB(response.data)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
+
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/students")
+      setStudentsDB(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const [selectedID, setSelectedID] = useState(null)
   const [newStatus, setNewStatus] = useState("")
@@ -59,6 +104,19 @@ function StudentDataApp() {
     if (selectedOverseer !== "" && selectedID !== "") {
       const newPair = [selectedOverseer, selectedID]
       setOverseerIDs([...overseerIDs, newPair])
+
+      // Update database
+      axios
+        .post("http://localhost:3000/api/assignOverseer", {
+          overseerID: selectedOverseer,
+          studentID: selectedID,
+        })
+        .then(response => {
+          console.log(response.data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       setSelectedOverseer("")
       setSelectedID("")
     }
@@ -372,7 +430,7 @@ function StudentDataApp() {
                             name="overseer"
                             placeholder="Enter Overseer ID"
                             value={selectedOverseer}
-                            onChange={handleOverseerSelection}
+                            onChange={handleOverseerSelection} // sets selectedOverseer
                             className="form-input"
                           />
                         </div>
@@ -381,7 +439,7 @@ function StudentDataApp() {
                           <br />
                           <Select
                             value={selectedID}
-                            onChange={handleStudentSelection}
+                            onChange={handleStudentSelection} // sets selectedID
                           >
                             <option value="">Select Student</option>
                             {students.map(student => (
@@ -400,7 +458,7 @@ function StudentDataApp() {
                         <br />
                         <br />
                         <br />
-                        {overseerIDs.length > 0 && (
+                        {/* {overseerIDs.length > 0 && (
                           <T variant="simple">
                             <thead>
                               <tr>
@@ -423,6 +481,29 @@ function StudentDataApp() {
                                     >
                                       Delete
                                     </B>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </T>
+                        )} */}
+
+                        {overseerIDs.length > 0 && (
+                          <T variant="simple">
+                            <thead>
+                              <tr>
+                                <th>Overseer ID</th>
+                                <th>Student ID</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {overseers.map(overseer => (
+                                <tr key={overseer.id}>
+                                  <td>{overseer.overseer_id}</td>
+                                  <td>{overseer.student_id}</td>
+                                  <td>
+                                    <br />
+                                    <B colorScheme="red">Delete</B>
                                   </td>
                                 </tr>
                               ))}

@@ -125,6 +125,26 @@ app.put("/api/students/updateStatus/:student_id", (req, res) => {
   })
 })
 
+// POST endpoint for assigning overseers to students
+app.post("/api/assignOverseer", (req, res) => {
+  const { overseerID, studentID } = req.body
+  const params = [overseerID, studentID]
+
+  // If both IDs are valid, update the 'Overseers' table with the new pairing
+  const insertQuery =
+    "INSERT INTO overseers (overseer_id, student_id) VALUES (?, ?)"
+
+  db.query(insertQuery, params, (insertErr, insertResult) => {
+    if (insertErr) {
+      console.error("Error assigning overseer:", insertErr)
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    res.status(200).send("Overseer assigned successfully")
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")
