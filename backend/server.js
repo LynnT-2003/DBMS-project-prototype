@@ -84,8 +84,16 @@ app.post("/addStudent", (req, res) => {
       student.monitoredBy,
     ],
     function (error, results) {
-      if (error) throw error
-      res.send("Student added!")
+      if (error) {
+        console.error("Error adding student:", error)
+        if (error.code === "ER_DUP_ENTRY") {
+          res.status(409).send("Student with this ID already exists")
+        } else {
+          res.status(500).send("Internal server error")
+        }
+      } else {
+        res.send("Student added!")
+      }
     }
   )
 })

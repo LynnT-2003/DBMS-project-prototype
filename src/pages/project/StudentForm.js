@@ -61,6 +61,7 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
           })
           .catch(error => {
             console.log(error)
+            alert("Could not add student. Please try again")
           })
       })
       .catch(error => {
