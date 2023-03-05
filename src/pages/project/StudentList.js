@@ -125,6 +125,9 @@ export default function StudentList({
       </Table>{" "}
       <br />
       <br /> */}
+      <h3>
+        <u>List of all the Students in the University</u>
+      </h3>
       <Table>
         <thead>
           <tr>

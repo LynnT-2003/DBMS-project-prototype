@@ -278,6 +278,23 @@ app.put("/api/scholarshipApplication/:student_id", (req, res) => {
   })
 })
 
+app.put("/api/scholarshipApplication/:student_id/reject", (req, res) => {
+  const student_id = req.params.student_id
+  const result = "rejected"
+
+  const query = `UPDATE scholarship_application SET result='${result}' WHERE student_id=${student_id}`
+
+  db.query(query, (error, results, fields) => {
+    if (error) {
+      console.error(error)
+      res.sendStatus(500)
+      return
+    }
+
+    res.sendStatus(200)
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")

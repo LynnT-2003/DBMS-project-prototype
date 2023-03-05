@@ -393,6 +393,21 @@ function StudentDataApp() {
       })
   }
 
+  function rejectScholarship(student_id) {
+    console.log("rejecting application")
+    axios
+      .put(
+        `http://localhost:3000/api/scholarshipApplication/${student_id}/reject`
+      )
+      .then(response => {
+        alert("Scholarship rejected successfully")
+        getScholarshipApplications()
+      })
+      .catch(error => {
+        console.error("Error rejecting scholarship: ", error)
+      })
+  }
+
   React.useEffect(() => {
     console.log("Students data have been updated")
   }, [students])
@@ -525,6 +540,49 @@ function StudentDataApp() {
                     showStatusModal={showStatusModal}
                     setShowStatusModal={setShowStatusModal}
                   />
+
+                  <h3>
+                    <u>Pending Scholarship Applications</u>
+                  </h3>
+
+                  <T>
+                    <thead>
+                      <tr>
+                        <th>Student ID</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {applications_db
+                        .filter(scholarship => scholarship.result === "pending")
+                        .map(scholarship => (
+                          <tr key={scholarship.student_id}>
+                            <td>{scholarship.student_id}</td>
+                            <td>{scholarship.result}...</td>
+                            <td>
+                              <B
+                                onClick={() =>
+                                  approveScholarship(scholarship.student_id)
+                                }
+                              >
+                                Approve
+                              </B>{" "}
+                              &nbsp; &nbsp;{" "}
+                              <B
+                                onClick={() =>
+                                  rejectScholarship(scholarship.student_id)
+                                }
+                              >
+                                Reject
+                              </B>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </T>
+                  <br />
+                  <br />
+                  <br />
                 </div>
                 <B onClick={handleStartStudent}>Back</B>
               </>
@@ -653,7 +711,7 @@ function StudentDataApp() {
                 )}
               </div>
             )}
-            <br />
+            {/* <br />
 
             <T>
               <thead>
@@ -677,12 +735,19 @@ function StudentDataApp() {
                         >
                           Approve
                         </B>{" "}
-                        &nbsp; &nbsp; <B>Reject</B>
+                        &nbsp; &nbsp;{" "}
+                        <B
+                          onClick={() =>
+                            rejectScholarship(scholarship.student_id)
+                          }
+                        >
+                          Reject
+                        </B>
                       </td>
                     </tr>
                   ))}
               </tbody>
-            </T>
+            </T> */}
           </div>
         )}
         {currentPage === "overseer" && !isLoggedInOverseer && (
