@@ -646,21 +646,23 @@ function StudentDataApp() {
                 </tr>
               </thead>
               <tbody>
-                {students_db.map(student => (
-                  <tr key={student.student_id}>
-                    <td>{student.student_id}</td>
-                    <td>{student.first_name}</td>
-                    <td>{student.last_name}</td>
-                    <td>{student.GPA}</td>
-                    <td>{student.SCPA}</td>
-                    <td>{student.Status}</td>
-                    <td>{student.monitored_by}</td>
-                    <td>
-                      <B colorScheme={"blue"}>Award CP</B>&nbsp;
-                      <B colorScheme={"blue"}>File Report</B>
-                    </td>
-                  </tr>
-                ))}
+                {students_db
+                  .filter(student => student.monitored_by === currentOverseer)
+                  .map(student => (
+                    <tr key={student.student_id}>
+                      <td>{student.student_id}</td>
+                      <td>{student.first_name}</td>
+                      <td>{student.last_name}</td>
+                      <td>{student.GPA}</td>
+                      <td>{student.SCPA}</td>
+                      <td>{student.Status}</td>
+                      <td>{student.monitored_by}</td>
+                      <td>
+                        <B colorScheme={"blue"}>Award CP</B>&nbsp;
+                        <B colorScheme={"blue"}>File Report</B>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
             <br />
