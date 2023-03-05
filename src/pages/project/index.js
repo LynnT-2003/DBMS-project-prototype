@@ -210,9 +210,7 @@ function StudentDataApp() {
 
   const handleLoginOverseer = e => {
     e.preventDefault()
-    const overseer = overseerIDs.find(
-      overseerID => overseerID[0] === usernameOverseer
-    )
+    const overseer = overseers.find(o => o.overseer_id === usernameOverseer)
     if (overseer && passwordOverseer === "password") {
       setIsLoggedInOverseer(true)
       setCurrentOverseer(usernameOverseer)
