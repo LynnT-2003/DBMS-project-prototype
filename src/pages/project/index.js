@@ -25,6 +25,7 @@ import scpa from "../../images/scpa_logo.png"
 
 function StudentDataApp() {
   const [cpAmount, setCpAmount] = useState("")
+  const [studentToAward, setStudentToAward] = useState("")
 
   const [students, setStudents] = useLocalStorage("studentsData", [])
   const [students_db, setStudentsDB] = useState([])
@@ -150,6 +151,23 @@ function StudentDataApp() {
       })
   }
 
+  function handleAwardCPSubmit() {
+    console.log("this shouldn't be looping")
+    console.log("Student to award CP:", studentToAward)
+    console.log("Amount to award CP:", cpAmount)
+    axios
+      .post("http://localhost:3000/api/awardCP", {
+        student_id: studentToAward,
+        cp: cpAmount,
+      })
+      .then(response => {
+        setShowAwardCPModal(false)
+      })
+      .catch(error => {
+        console.log("Error awarding CP fuck:", error)
+      })
+  }
+
   function displayAlert() {
     setShowAlert(true)
   }
@@ -165,7 +183,11 @@ function StudentDataApp() {
 
   const [showAwardCPModal, setShowAwardCPModal] = useState(false)
 
-  const handleAwardCPShow = () => setShowAwardCPModal(true)
+  const handleAwardCPShow = student => {
+    setStudentToAward(student)
+    setShowAwardCPModal(true)
+  }
+
   const handleAwardCPhide = () => setShowAwardCPModal(false)
 
   const [isLoggedInAdmin, setIsLoggedInAdmin] = useState(false)
@@ -665,7 +687,10 @@ function StudentDataApp() {
                       <td>{student.Status}</td>
                       <td>{student.monitored_by}</td>
                       <td>
-                        <B colorScheme={"blue"} onClick={handleAwardCPShow}>
+                        <B
+                          colorScheme={"blue"}
+                          onClick={() => handleAwardCPShow(student.student_id)}
+                        >
                           Award CP
                         </B>
                         &nbsp;
@@ -676,12 +701,14 @@ function StudentDataApp() {
               </tbody>
             </Table>
 
-            <Modal show={showAwardCPModal} onHide={handleAwardCPhide}>
+            <Modal
+              show={showAwardCPModal}
+              onHide={() => setShowAwardCPModal(false)}
+            >
               <Modal.Header closeButton>
-                <Modal.Title>Award CP</Modal.Title>
+                <Modal.Title>Award CP to {studentToAward}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {/* Add form elements here */}
                 <form>
                   <div className="form-group">
                     <label htmlFor="cp-amount">
@@ -699,10 +726,15 @@ function StudentDataApp() {
                 </form>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleAwardCPhide}>
-                  Close
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowAwardCPModal(false)}
+                >
+                  Cancel
                 </Button>
-                <Button variant="primary">Submit</Button>
+                <Button variant="primary" onClick={handleAwardCPSubmit}>
+                  Submit
+                </Button>
               </Modal.Footer>
             </Modal>
             <br />

@@ -181,12 +181,45 @@ app.get("/api/students/:id", (req, res) => {
     }
 
     if (results.length === 0) {
-      res.status(404).send("Student not found")
+      res.status(404).send("Student not found FUCK")
       return
     }
 
     const studentInfo = results[0]
     res.status(200).json(studentInfo)
+  })
+})
+
+// API endpoint for awarding CP to a student
+// app.post("/api/awardCP", (req, res) => {
+//   const studentId = req.body.student_id
+//   const cpAmount = req.body.cp
+
+//   const updateCPQuery = `UPDATE students SET CP = CP + ${cpAmount} WHERE id = ${studentId}`
+
+//   connection.query(updateCPQuery, (error, results, fields) => {
+//     if (error) {
+//       console.error("Error awarding CP: ", error)
+//       res.sendStatus(500)
+//     } else {
+//       console.log(`CP updated for student with id ${studentId}`)
+//       res.sendStatus(200)
+//     }
+//   })
+// })
+app.post("/api/awardCP", (req, res) => {
+  const { student_id, cp } = req.body
+
+  const sql = `UPDATE students SET cp = cp + ? WHERE student_id = ?`
+
+  db.query(sql, [cp, student_id], (err, result) => {
+    if (err) {
+      console.log("Error awarding CP:", err)
+      res.status(500).send("Error awarding CP")
+    } else {
+      console.log(result.affectedRows + " record(s) updated")
+      res.status(200).send("CP awarded successfully")
+    }
   })
 })
 
