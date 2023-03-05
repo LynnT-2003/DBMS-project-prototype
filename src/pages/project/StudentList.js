@@ -69,6 +69,7 @@ export default function StudentList({
   }
 
   const [showModal, setShowModal] = useState(false)
+
   return (
     <div>
       {/* <Table>

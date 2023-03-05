@@ -3,7 +3,7 @@ import axios from "axios"
 import StudentForm from "./StudentForm"
 import StudentList from "./StudentList"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Navbar, Nav, NavDropdown, Button, Table } from "react-bootstrap"
+import { Navbar, Nav, NavDropdown, Button, Table, Modal } from "react-bootstrap"
 import { useLocalStorage } from "react-use"
 import {
   ChakraProvider,
@@ -24,6 +24,8 @@ import {
 import scpa from "../../images/scpa_logo.png"
 
 function StudentDataApp() {
+  const [cpAmount, setCpAmount] = useState("")
+
   const [students, setStudents] = useLocalStorage("studentsData", [])
   const [students_db, setStudentsDB] = useState([])
   const [studentInfo, setStudentInfo] = useState(null)
@@ -160,6 +162,11 @@ function StudentDataApp() {
   function handlePage(page) {
     setCurrentPage(page)
   }
+
+  const [showAwardCPModal, setShowAwardCPModal] = useState(false)
+
+  const handleAwardCPShow = () => setShowAwardCPModal(true)
+  const handleAwardCPhide = () => setShowAwardCPModal(false)
 
   const [isLoggedInAdmin, setIsLoggedInAdmin] = useState(false)
   const [isLoggedInOverseer, setIsLoggedInOverseer] = useState(false)
@@ -658,13 +665,46 @@ function StudentDataApp() {
                       <td>{student.Status}</td>
                       <td>{student.monitored_by}</td>
                       <td>
-                        <B colorScheme={"blue"}>Award CP</B>&nbsp;
+                        <B colorScheme={"blue"} onClick={handleAwardCPShow}>
+                          Award CP
+                        </B>
+                        &nbsp;
                         <B colorScheme={"blue"}>File Report</B>
                       </td>
                     </tr>
                   ))}
               </tbody>
             </Table>
+
+            <Modal show={showAwardCPModal} onHide={handleAwardCPhide}>
+              <Modal.Header closeButton>
+                <Modal.Title>Award CP</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {/* Add form elements here */}
+                <form>
+                  <div className="form-group">
+                    <label htmlFor="cp-amount">
+                      Please enter how much CP to award:
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="cp-amount"
+                      placeholder="Enter amount"
+                      value={cpAmount}
+                      onChange={e => setCpAmount(e.target.value)}
+                    />
+                  </div>
+                </form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleAwardCPhide}>
+                  Close
+                </Button>
+                <Button variant="primary">Submit</Button>
+              </Modal.Footer>
+            </Modal>
             <br />
             <B colorScheme="red" onClick={handleLogoutOverseer}>
               Logout

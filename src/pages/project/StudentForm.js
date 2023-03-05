@@ -28,7 +28,11 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
   }, [])
 
   const handleChange = event => {
-    setStudent({ ...student, [event.target.name]: event.target.value })
+    const { name, value } = event.target
+    setStudent(prevState => ({
+      ...prevState,
+      [name]: value,
+    }))
   }
 
   const handleSubmit = event => {
@@ -74,10 +78,12 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
       firstName: "",
       lastName: "",
       GPA: "",
-      SCPA: "",
+      // SCPA: "",
       status: "",
       email: "",
       monitoredBy: "",
+      CP: "",
+      semesters: "",
     })
   }
 
@@ -120,14 +126,14 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
             onChange={handleChange}
             className="form-input"
           />
-          <Input
+          {/* <Input
             type="text"
             name="SCPA"
             placeholder="SCPA"
             value={student.SCPA}
             onChange={handleChange}
             className="form-input"
-          />
+          /> */}
         </Grid>
         <br />
         <Grid templateColumns="repeat(3, 1fr)" gap={4}>
@@ -171,6 +177,24 @@ export default function StudentForm({ addStudent, students, overseerIDs }) {
                 ))
               : null}
           </Select>
+          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+            <Input
+              type="text"
+              name="CP"
+              placeholder="CP"
+              value={student.CP}
+              onChange={handleChange}
+              className="form-input"
+            />
+            <Input
+              type="text"
+              name="semesters"
+              placeholder="semesters"
+              value={student.semesters}
+              onChange={handleChange}
+              className="form-input"
+            />
+          </Grid>
         </Grid>{" "}
         <br />
         <Button type="submit" colorScheme="blue" size="md">

@@ -70,7 +70,7 @@ app.get("/testadd", (req, res) => {
 app.post("/addStudent", (req, res) => {
   const student = req.body
   const sqlInsert =
-    "INSERT INTO students (student_id, first_name, last_name, GPA, SCPA, Status, email, monitored_by) VALUES (?,?,?,?,?,?,?,?);"
+    "INSERT INTO students (student_id, first_name, last_name, GPA, Status, email, monitored_by, CP, semesters) VALUES (?,?,?,?,?,?,?,?,?);"
   db.query(
     sqlInsert,
     [
@@ -78,10 +78,12 @@ app.post("/addStudent", (req, res) => {
       student.firstName,
       student.lastName,
       student.GPA,
-      student.SCPA,
+      // student.SCPA,
       student.status,
       student.email,
       student.monitoredBy,
+      student.CP,
+      student.semesters,
     ],
     function (error, results) {
       if (error) {
