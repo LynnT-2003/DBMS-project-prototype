@@ -167,6 +167,27 @@ app.delete("/api/overseers/:id", (req, res) => {
   })
 })
 
+// GET endpoint for retrieving a single student's information
+app.get("/api/students/:id", (req, res) => {
+  const studentID = req.params.id
+  const selectQuery = "SELECT * FROM students WHERE student_id = ?"
+  db.query(selectQuery, [studentID], (error, results) => {
+    if (error) {
+      console.error("Error retrieving student information:", error)
+      res.status(500).send("Internal server error")
+      return
+    }
+
+    if (results.length === 0) {
+      res.status(404).send("Student not found")
+      return
+    }
+
+    const studentInfo = results[0]
+    res.status(200).json(studentInfo)
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")

@@ -26,6 +26,7 @@ import scpa from "../../images/scpa_logo.png"
 function StudentDataApp() {
   const [students, setStudents] = useLocalStorage("studentsData", [])
   const [students_db, setStudentsDB] = useState([])
+  const [studentInfo, setStudentInfo] = useState(null)
   const [scholarshipStudents, setScholarshipStudents] = useLocalStorage(
     "scholarshipList",
     []
@@ -233,6 +234,15 @@ function StudentDataApp() {
   const [passwordStudent, setPasswordStudent] = useState("")
   const [currentStudent, setCurrentStudent] = useState("")
 
+  // studentInfo
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/students/${currentStudent}`)
+      .then(response => response.json())
+      .then(data => setStudentInfo(data))
+      .catch(error => console.error("Error fetching student data:", error))
+  }, [currentStudent])
+
   const handleChangeStudent = event => {
     if (event.target.name === "username") {
       setUsernameStudent(event.target.value)
@@ -244,14 +254,18 @@ function StudentDataApp() {
 
   const handleLoginStudent = e => {
     e.preventDefault()
-    const student = students.find(s => s.id === usernameStudent)
+    const student = students_db.find(
+      s => s.student_id === parseInt(usernameStudent)
+    )
+    console.table(students_db)
+    console.log(student, usernameStudent)
     if (student && passwordStudent === "password") {
       setIsLoggedInStudent(true)
       setCurrentStudent(usernameStudent)
     } else {
       setIsLoggedInStudent(false)
       displayAlert()
-      console.table({ students })
+      console.table({ students_db })
       console.log({ usernameStudent })
     }
   }
@@ -634,15 +648,15 @@ function StudentDataApp() {
                 </tr>
               </thead>
               <tbody>
-                {students.map(student => (
-                  <tr key={student.id}>
-                    <td>{student.id}</td>
-                    <td>{student.firstName}</td>
-                    <td>{student.lastName}</td>
+                {students_db.map(student => (
+                  <tr key={student.student_id}>
+                    <td>{student.student_id}</td>
+                    <td>{student.first_name}</td>
+                    <td>{student.last_name}</td>
                     <td>{student.GPA}</td>
                     <td>{student.SCPA}</td>
-                    <td>{student.status}</td>
-                    <td>{student.monitoredBy}</td>
+                    <td>{student.Status}</td>
+                    <td>{student.monitored_by}</td>
                     <td>
                       <B colorScheme={"blue"}>Award CP</B>&nbsp;
                       <B colorScheme={"blue"}>File Report</B>
@@ -747,29 +761,82 @@ function StudentDataApp() {
               <h3>Welcome Student ID: {currentStudent}</h3>
               <br />
               <br />
-              {students
-                .filter(student => student.id === currentStudent)
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>Student ID:</b>
+                    </td>
+                    <td>{studentInfo.student_id}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>First Name:</b>
+                    </td>
+                    <td>{studentInfo.first_name}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Last Name:</b>
+                    </td>
+                    <td>{studentInfo.last_name}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>GPA:</b>
+                    </td>
+                    <td>{studentInfo.GPA}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>SCPA:</b>
+                    </td>
+                    <td>{studentInfo.SCPA}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Status:</b>
+                    </td>
+                    <td>{studentInfo.Status}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Email:</b>
+                    </td>
+                    <td>{studentInfo.email}</td>
+                  </tr>
+                  {/* <tr>
+                    <td>
+                      <b>Monitored By:</b>
+                    </td>
+                    
+                    <td>{studentInfo.monitored_by}</td>
+                  </tr> */}
+                </tbody>
+              </table>
+              {/* {students_db
+                .filter(student => student.student_id === currentStudent)
                 .map((student, index) => (
                   <div key={index} className="card-info">
                     <div className="card-item">
                       <p>
                         <b>Student ID:&nbsp; </b>
                       </p>
-                      <p>{student.id}</p>
+                      <p>{student.student_id}</p>
                     </div>
                     <div className="card-item">
                       <p>
                         <b>First Name</b>
                       </p>
 
-                      <p>{student.firstName}</p>
+                      <p>{student.first_name}</p>
                     </div>
                     <div className="card-item">
                       <p>
                         <b>Last Name:</b>
                       </p>
 
-                      <p>{student.lastName}</p>
+                      <p>{student.last_name}</p>
                     </div>
                     <div className="card-item">
                       <p>
@@ -793,15 +860,17 @@ function StudentDataApp() {
                       <p>{student.status}</p>
                     </div>
                   </div>
-                ))}
+                ))} */}
               <br />
               <B
                 colorScheme={"blue"}
                 isDisabled={
-                  students.filter(student => student.id === currentStudent)[0]
-                    .GPA < 3.85 ||
-                  students.filter(student => student.id === currentStudent)[0]
-                    .SCPA < 3.85
+                  students_db.filter(
+                    student => student.student_id === parseInt(currentStudent)
+                  )[0].GPA < 3.85 ||
+                  students_db.filter(
+                    student => student.student_id === parseInt(currentStudent)
+                  )[0].SCPA < 3.85
                 }
               >
                 Apply Scholarship
