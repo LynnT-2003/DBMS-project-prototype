@@ -223,6 +223,61 @@ app.post("/api/awardCP", (req, res) => {
   })
 })
 
+app.post("/api/scholarshipApplication", (req, res) => {
+  const student_id = req.body.student_id
+  const result = "pending"
+  const query = `INSERT INTO scholarship_application (student_id, result) VALUES (${student_id}, '${result}')`
+  db.query(query, (error, results, fields) => {
+    if (error) {
+      console.error(error)
+      res.sendStatus(500)
+      return
+    }
+    res.sendStatus(200)
+  })
+})
+
+// get scholarship application
+app.get("/api/scholarshipApplications", (req, res) => {
+  const query = "SELECT * FROM scholarship_application"
+
+  db.query(query, (error, results, fields) => {
+    if (error) {
+      console.error(error)
+      res.sendStatus(500)
+      return
+    }
+
+    res.json(results)
+  })
+})
+
+app.put("/api/scholarshipApplication/:student_id", (req, res) => {
+  const student_id = req.params.student_id
+  const result = req.body.result
+
+  const query = `UPDATE scholarship_application SET result='${result}' WHERE student_id=${student_id}`
+  const studentQuery = `UPDATE students SET status='Scholarship' WHERE student_id=${student_id}`
+
+  db.query(query, (error, results, fields) => {
+    if (error) {
+      console.error(error)
+      res.sendStatus(500)
+      return
+    }
+
+    db.query(studentQuery, (error, results, fields) => {
+      if (error) {
+        console.error(error)
+        res.sendStatus(500)
+        return
+      }
+
+      res.sendStatus(200)
+    })
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")

@@ -80,6 +80,29 @@ function StudentDataApp() {
     }
   }
 
+  const [applications_db, setApplicationsDB] = useState([])
+
+  useEffect(() => {
+    getScholarshipApplications()
+    const interval = setInterval(() => {
+      getScholarshipApplications()
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const getScholarshipApplications = () => {
+    console.log("Fetching scholarship applications from applicationsDB")
+    console.log()
+    axios
+      .get("http://localhost:3000/api/scholarshipApplications")
+      .then(response => {
+        setApplicationsDB(response.data)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   const [selectedID, setSelectedID] = useState(null)
   const [newStatus, setNewStatus] = useState("")
   const [showStatusModal, setShowStatusModal] = useState(false)
@@ -338,6 +361,36 @@ function StudentDataApp() {
     updateStudentStatus(selectedID, newStatus)
     setSelectedID(null)
     setNewStatus("")
+  }
+
+  function applyForScholarship(studentForScholarApp) {
+    axios
+      .post("http://localhost:3000/api/scholarshipApplication", {
+        student_id: studentForScholarApp,
+      })
+      .then(response => {
+        alert("Successfully applied for scholarship")
+      })
+      .catch(error => {
+        console.log(error)
+        alert(studentForScholarApp)
+      })
+  }
+
+  function approveScholarship(student_id) {
+    axios
+      .put(`http://localhost:3000/api/scholarshipApplication/${student_id}`, {
+        result: "approved",
+      })
+      .then(response => {
+        console.log(response)
+        // Refresh the scholarships table
+        alert("Successfully approved application")
+        getScholarshipApplications()
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   React.useEffect(() => {
@@ -600,6 +653,36 @@ function StudentDataApp() {
                 )}
               </div>
             )}
+            <br />
+
+            <T>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications_db
+                  .filter(scholarship => scholarship.result === "pending")
+                  .map(scholarship => (
+                    <tr key={scholarship.student_id}>
+                      <td>{scholarship.student_id}</td>
+                      <td>{scholarship.result}...</td>
+                      <td>
+                        <B
+                          onClick={() =>
+                            approveScholarship(scholarship.student_id)
+                          }
+                        >
+                          Approve
+                        </B>{" "}
+                        &nbsp; &nbsp; <B>Reject</B>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </T>
           </div>
         )}
         {currentPage === "overseer" && !isLoggedInOverseer && (
@@ -944,6 +1027,7 @@ function StudentDataApp() {
                     student => student.student_id === parseInt(currentStudent)
                   )[0].SCPA < 3.85
                 }
+                onClick={() => applyForScholarship(currentStudent)}
               >
                 Apply Scholarship
               </B>{" "}
