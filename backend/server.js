@@ -307,6 +307,20 @@ app.get("/api/admin", (req, res) => {
   })
 })
 
+// API endpoint for posting reports
+app.post("/reports", (req, res) => {
+  const { student_id, reason } = req.body
+  const sql = "INSERT INTO reports (student_id, reason) VALUES (?, ?)"
+  db.query(sql, [student_id, reason], (err, result) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send("Error saving report")
+    } else {
+      res.status(200).send("Report saved successfully")
+    }
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")

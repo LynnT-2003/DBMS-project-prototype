@@ -425,6 +425,35 @@ function StudentDataApp() {
       })
   }
 
+  // handling reports as overseers here
+  const [studentToReport, setStudentToReport] = useState(null)
+  const handleFileReportShow = student_id => {
+    setStudentToReport(student_id)
+    setShowFileReportModal(true)
+  }
+  const [showFileReportModal, setShowFileReportModal] = useState(false)
+  const [report, setReport] = useState("")
+
+  const handleReportChange = event => {
+    setReport(event.target.value)
+  }
+
+  const handleFileReportSubmit = () => {
+    axios
+      .post("http://localhost:3000/reports", {
+        student_id: studentToReport,
+        reason: report,
+      })
+      .then(response => {
+        console.log(response.data)
+        setShowFileReportModal(false)
+      })
+      .catch(error => {
+        console.error(error)
+        alert("Error submitting report")
+      })
+  }
+
   React.useEffect(() => {
     console.log("Students data have been updated")
   }, [students])
@@ -865,12 +894,50 @@ function StudentDataApp() {
                           Award CP
                         </B>
                         &nbsp;
-                        <B colorScheme={"blue"}>File Report</B>
+                        <B
+                          colorScheme={"blue"}
+                          onClick={() =>
+                            handleFileReportShow(student.student_id)
+                          }
+                        >
+                          File Report
+                        </B>
                       </td>
                     </tr>
                   ))}
               </tbody>
             </Table>
+
+            <Modal
+              show={showFileReportModal}
+              onHide={() => setShowFileReportModal(false)}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  File Report for student ID: {studentToReport}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <FormControl
+                  as="textarea"
+                  aria-label="With textarea"
+                  placeholder="Enter your report here"
+                  value={report}
+                  onChange={handleReportChange}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowFileReportModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button variant="primary" onClick={handleFileReportSubmit}>
+                  Submit
+                </Button>
+              </Modal.Footer>
+            </Modal>
 
             <Modal
               show={showAwardCPModal}
