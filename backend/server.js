@@ -295,6 +295,18 @@ app.put("/api/scholarshipApplication/:student_id/reject", (req, res) => {
   })
 })
 
+app.get("/api/admin", (req, res) => {
+  const sql = "SELECT * FROM admin"
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error executing SQL query:", err)
+      res.status(500).send("Error retrieving admin data")
+      return
+    }
+    res.json(result)
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")

@@ -24,6 +24,21 @@ import {
 import scpa from "../../images/scpa_logo.png"
 
 function StudentDataApp() {
+  const [adminDb, setAdminDb] = useState([])
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/admin")
+      .then(response => {
+        setAdminDb(response.data)
+        console.log(adminDb)
+        alert("Successfully fetched Admin data")
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [])
+
   const [cpAmount, setCpAmount] = useState("")
   const [studentToAward, setStudentToAward] = useState("")
 
@@ -231,14 +246,16 @@ function StudentDataApp() {
 
   const handleLogin = e => {
     e.preventDefault()
-    if (adminIDs.includes(username) && password === "password") {
+    const admin = adminDb.find(a => a.admin_ID === username)
+    if (admin && password === "password") {
       setIsLoggedInAdmin(true)
       setCurrentAdminID(username)
     } else {
       setIsLoggedInAdmin(false)
       displayAlert()
-      console.table({ adminIDs })
-      console.log({ username })
+      alert({ adminDb })
+      console.table(adminDb)
+      console.log(username)
     }
   }
 
@@ -818,6 +835,9 @@ function StudentDataApp() {
                   <th>GPA</th>
                   <th>SCPA</th>
                   <th>Status</th>
+                  <th>Email</th>
+                  <th>Semesters</th>
+                  <th>Accumulated CP</th>
                   <th>Monitored By</th>
                   <th>Actions</th>
                 </tr>
@@ -833,6 +853,9 @@ function StudentDataApp() {
                       <td>{student.GPA}</td>
                       <td>{student.SCPA}</td>
                       <td>{student.Status}</td>
+                      <td>{student.email}</td>
+                      <td>{student.semesters}</td>
+                      <td>{student.CP}</td>
                       <td>{student.monitored_by}</td>
                       <td>
                         <B
