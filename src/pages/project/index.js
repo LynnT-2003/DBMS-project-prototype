@@ -426,6 +426,29 @@ function StudentDataApp() {
   }
 
   // handling reports as overseers here
+  const [reports_db, setReportsDB] = useState([])
+
+  useEffect(() => {
+    getReports()
+    const interval = setInterval(() => {
+      getReports()
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const getReports = () => {
+    console.log("Fetching reports")
+    axios
+      .get("http://localhost:3000/reports")
+      .then(response => {
+        setReportsDB(response.data)
+        console.log(reports_db)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   const [studentToReport, setStudentToReport] = useState(null)
   const handleFileReportShow = student_id => {
     setStudentToReport(student_id)
@@ -626,6 +649,27 @@ function StudentDataApp() {
                         ))}
                     </tbody>
                   </T>
+                  <br />
+                  <h3>
+                    <u>Student Reports</u>
+                  </h3>
+                  <T>
+                    <thead>
+                      <tr>
+                        <th>Student ID</th>
+                        <th>Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reports_db.map(report => (
+                        <tr key={report.report_id}>
+                          <td>{report.student_id}</td>
+                          <td>{report.reason}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </T>
+
                   <br />
                   <br />
                   <br />

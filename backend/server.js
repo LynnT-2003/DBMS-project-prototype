@@ -321,6 +321,15 @@ app.post("/reports", (req, res) => {
   })
 })
 
+// API endpoint for getting reports
+app.get("/reports", (req, res) => {
+  const sql = "SELECT * FROM reports"
+  db.query(sql, (err, result) => {
+    if (err) throw err
+    res.send(result)
+  })
+})
+
 // Start the server
 app.listen(3000, function () {
   console.log("Server started on port 3000!")
