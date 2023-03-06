@@ -137,7 +137,10 @@ export default function StudentList({
             <th>GPA</th>
             <th>SCPA</th>
             <th>Status</th>
+            <th>Email</th>
             <th>Monitored By</th>
+            <th>Semesters</th>
+            <th>Contribution Points</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -150,7 +153,10 @@ export default function StudentList({
               <td>{student.GPA}</td>
               <td>{student.SCPA}</td>
               <td>{student.Status}</td>
+              <td>{student.email}</td>
               <td>{student.monitored_by}</td>
+              <td>{student.semesters}</td>
+              <td>{student.CP}</td>
               <td>
                 <Grid templateColumns="repeat(2, 1fr)" gap={3}>
                   <Button
